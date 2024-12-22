@@ -65,9 +65,7 @@ def test_main(monkeypatch, s3):
         bucket_policy = {"Version": "2012-10-17", "Statement": [build_statement()]}
         s3.put_bucket_policy(Bucket="my-bucket-1", Policy=json.dumps(bucket_policy))
 
-        monkeypatch.setattr(
-            sys, "argv", ["awsiammapper", "-o", file_path, "-s", "s3"]
-        )
+        monkeypatch.setattr(sys, "argv", ["awsiammapper", "-o", file_path, "-s", "s3"])
 
         mapper.main()
 
