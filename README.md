@@ -1,9 +1,10 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Joncpaske_aws-iam-mapper&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Joncpaske_aws-iam-mapper) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Joncpaske_aws-iam-mapper&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Joncpaske_aws-iam-mapper)
 # aws-iam-mapper
 When working on long lived environments, understanding the state of access is paramount to ensure least privelege. Over time access needs can change with existing permissions no longer needed. In order to adhere to the least privilege principle regular access reviews are needed to maintain an active security posture.
 
 The core focus of this tool is to support organisations / account managers where the access controls have not been built in a centralised manner, resulting in a greater complexity to decipher access controls. For example instead of being centralised under IAM Roles or Lake Formation, decentralised resource policises such as S3 bucket policies could have been used.
 
-## Running aws-iam-mapp
+## Running aws-iam-map
 
 This tool is configured to either run as a commandline tool either locally with a direct pip install or via docker.
 
