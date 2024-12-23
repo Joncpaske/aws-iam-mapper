@@ -4,6 +4,7 @@ on:
     branches:
       - main
       - feature/sonar-cloud
+      - release-test
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
