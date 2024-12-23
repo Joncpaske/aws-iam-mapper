@@ -18,7 +18,7 @@ def from_cli():
     """from_cli - retreive config from the cli utilising argparse"""
 
     parser = argparse.ArgumentParser(
-        prog="AWS IAM Mappe",
+        prog="AWS IAM Mapper",
         description="maps identities access to resources within a given AWS Account",
         usage="awsiammapper [-s SERVICES] -o OUTPUT",
     )
