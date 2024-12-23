@@ -21,6 +21,9 @@ jobs:
         run: python -m pip install -r requirements-dev.txt
       - name: run tests
         run: pytest --cov=awsiammapper tests
+        env:
+          AWS_ACCESS_KEY_ID: dummy
+          AWS_SECRET_ACCESS_KEY: dummy
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v4
         env:
