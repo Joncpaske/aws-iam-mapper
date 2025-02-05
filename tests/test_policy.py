@@ -1,7 +1,11 @@
 """test policy statement generation"""
 
-from awsiammapper.policy import PolicyStatement, flattern
-from tests.helper import build_policy_statement, build_statement
+from awsiammapper.policy import Condition, flattern
+from tests.helper import (
+    build_policy_statement,
+    build_statement,
+    build_statement_with_condition,
+)
 
 
 def test_flattern_multi_resource():
@@ -62,36 +66,17 @@ def test_flattern_multi_actions_resources():
     )
 
     expected_policy = [
-        PolicyStatement(
-            statement_id="DefaultPolicy",
-            principle_authority="*",
-            principle_ref="*",
-            action="s3:ListObject",
-            effect="Deny",
-            resource="arn:aws:s3:::resource1",
+        build_policy_statement(
+            action="s3:ListObject", resource="arn:aws:s3:::resource1"
         ),
-        PolicyStatement(
-            statement_id="DefaultPolicy",
-            principle_authority="*",
-            principle_ref="*",
+        build_policy_statement(
+            action="s3:GetObject", resource="arn:aws:s3:::resource1"
+        ),
+        build_policy_statement(
+            action="s3:ListObject", resource="arn:aws:s3:::resource2"
+        ),
+        build_policy_statement(
             action="s3:GetObject",
-            effect="Deny",
-            resource="arn:aws:s3:::resource1",
-        ),
-        PolicyStatement(
-            statement_id="DefaultPolicy",
-            principle_authority="*",
-            principle_ref="*",
-            action="s3:ListObject",
-            effect="Deny",
-            resource="arn:aws:s3:::resource2",
-        ),
-        PolicyStatement(
-            statement_id="DefaultPolicy",
-            principle_authority="*",
-            principle_ref="*",
-            action="s3:GetObject",
-            effect="Deny",
             resource="arn:aws:s3:::resource2",
         ),
     ]
@@ -166,6 +151,69 @@ def test_multi_principal_types():
             principle_authority="Service",
             principle_ref="elasticloadbalancing.amazonaws.com",
         ),
+    ]
+
+    assert policy == expected_policy
+
+
+def test_flattern_with_conditional():
+    """happy path test for condition statement within the AWS Policy document statement"""
+
+    policy = flattern(build_statement_with_condition())
+
+    expected_policy = [
+        build_policy_statement(
+            conditions=[
+                (Condition(key="S3:Prefix", operater="StringLike", value="janedoe/*"))
+            ]
+        )
+    ]
+
+    assert policy == expected_policy
+
+
+def test_flattern_with_conditional_multi_val():
+    """condition test with multiple values for a given operater"""
+
+    policy = flattern(
+        build_statement_with_condition(
+            condition={"StringLike": {"S3:Prefix": ["janedoe/*", "samedoe/*"]}}
+        )
+    )
+
+    expected_policy = [
+        build_policy_statement(
+            conditions=[
+                Condition(key="S3:Prefix", operater="StringLike", value="janedoe/*"),
+                Condition(key="S3:Prefix", operater="StringLike", value="samedoe/*"),
+            ]
+        )
+    ]
+
+    assert policy == expected_policy
+
+
+def test_flattern_with_conditional_multi_operators():
+    """condition test with multiple codition operators"""
+
+    policy = flattern(
+        build_statement_with_condition(
+            condition={
+                "StringLike": {"S3:Prefix": "janedoe/*"},
+                "StringNotLike": {"S3:Prefix": "janedoe/dev/*"},
+            }
+        )
+    )
+
+    expected_policy = [
+        build_policy_statement(
+            conditions=[
+                Condition(key="S3:Prefix", operater="StringLike", value="janedoe/*"),
+                Condition(
+                    key="S3:Prefix", operater="StringNotLike", value="janedoe/dev/*"
+                ),
+            ]
+        )
     ]
 
     assert policy == expected_policy

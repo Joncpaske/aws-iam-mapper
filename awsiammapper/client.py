@@ -2,10 +2,13 @@
 
 import ast
 import logging
+from typing import Literal
 
 import boto3
 
 from awsiammapper.policy import flattern
+
+Service = Literal["s3", "iam"]
 
 
 class BaseClient:
@@ -23,8 +26,8 @@ class BaseClient:
 class S3Client(BaseClient):
     """AWS S3 client - list buckets and get associated bucket policies"""
 
-    def __init__(self):
-        self.client = boto3.client("s3")
+    def __init__(self, client=None):
+        self.client = client if client else boto3.client("s3")
 
     def list(self) -> list[str]:
         """list - list S3 buckets contained within the associated AWS account"""
@@ -61,3 +64,27 @@ class S3Client(BaseClient):
 
             if exit_on_error:
                 raise KeyError("Resource not found") from e
+
+
+class IAMRoleClient(BaseClient):
+    """boto3 client wrapper for the AWS IAM Role interaction"""
+
+    def __init__(self, client=None):
+        self.client = client if client else boto3.client("iam")
+
+    def list(self) -> list[str]:
+        """list - list resources (does not use pagination)"""
+
+    def get_policies(self, resources, exit_on_error=True):
+        """get_policies - get a list of policies for each resources"""
+
+
+def get_client(service: Service) -> BaseClient:
+    """Factory function for AWS resource clients
+
+    Keyword Arguments:
+    service - an aws service - [s3, iam]
+    """
+    clients = {"s3": S3Client, "iam": IAMRoleClient}
+
+    return clients[service]()

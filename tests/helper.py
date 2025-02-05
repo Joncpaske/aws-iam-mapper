@@ -16,6 +16,27 @@ def build_statement(
     }
 
 
+def build_statement_with_condition(
+    sid="DefaultPolicy",
+    principal="*",
+    action="s3:*",
+    effect="Deny",
+    resource="*",
+    condition=None,
+):
+    """Policy statement dictionary builder"""
+    return {
+        "Sid": sid,
+        "Principal": principal,
+        "Action": action,
+        "Effect": effect,
+        "Resource": resource,
+        "Condition": (
+            condition if condition else {"StringLike": {"S3:Prefix": "janedoe/*"}}
+        ),
+    }
+
+
 def build_policy_statement(
     statement_id="DefaultPolicy",
     principle_authority="*",
@@ -23,6 +44,7 @@ def build_policy_statement(
     action="s3:*",
     effect="Deny",
     resource="*",
+    conditions=None,
 ):
     """PolicyStatement class builder"""
     return PolicyStatement(
@@ -32,4 +54,5 @@ def build_policy_statement(
         action=action,
         effect=effect,
         resource=resource,
+        conditions=conditions if conditions else [],
     )
