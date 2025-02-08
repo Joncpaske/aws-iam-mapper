@@ -1,6 +1,6 @@
 FROM python:3.13-alpine3.21
 
-COPY ./dist/*.whl .
+COPY dist/*.whl .
 RUN python -m pip install awsiammapper*.whl \
     && rm *.whl
 
