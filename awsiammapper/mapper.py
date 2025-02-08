@@ -3,24 +3,22 @@
 import functools
 
 from awsiammapper import config
-from awsiammapper.client import S3Client
+from awsiammapper.client import get_client
 from awsiammapper.writer import write_csv
 
-clients = {"s3": S3Client}
 
-
-def _map(service_clients, output, app_config):
+def _map(get_service_client, output, app_config):
 
     policies = []
 
     for service in app_config.services:
-        client = service_clients[service]()
+        client = get_service_client(service)
         policies += client.get_policies(client.list())
 
     output(policies, app_config.file_path)
 
 
-map_iam = functools.partial(_map, clients, write_csv)
+map_iam = functools.partial(_map, get_client, write_csv)
 
 
 def lambda_handler(event, context):

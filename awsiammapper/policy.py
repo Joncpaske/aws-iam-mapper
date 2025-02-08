@@ -4,6 +4,15 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
+class Condition:
+    """AWS Policy statement Condition"""
+
+    key: str
+    operater: str
+    value: str
+
+
+@dataclass(frozen=True)
 class PolicyStatement:
     """Standardised resource policy statement"""
 
@@ -13,6 +22,7 @@ class PolicyStatement:
     action: str
     effect: str
     resource: str
+    conditions: list[Condition]
 
 
 def flattern(aws_statement) -> list[PolicyStatement]:
@@ -21,6 +31,9 @@ def flattern(aws_statement) -> list[PolicyStatement]:
     Keyword arguments:
     aws_statement -- AWS Policy statement
     """
+
+    conditions = get_conditions(aws_statement)
+
     return [
         PolicyStatement(
             statement_id=aws_statement["Sid"],
@@ -29,6 +42,7 @@ def flattern(aws_statement) -> list[PolicyStatement]:
             action=action,
             effect=aws_statement["Effect"],
             resource=resource,
+            conditions=conditions,
         )
         for resource in get_resources(aws_statement)
         for action in get_actions(aws_statement)
@@ -76,3 +90,20 @@ def get_principals(statement) -> dict[str, str]:
         key: [val] if isinstance(val, str) else val
         for key, val in statement["Principal"].items()
     }
+
+
+def get_conditions(statement) -> list[Condition]:
+    """flattern conditions into a list
+
+    Keyword arguments:
+    statement -- AWS Policy statement
+    """
+    if "Condition" not in statement:
+        return []
+
+    return [
+        Condition(key=key, operater=operater, value=val)
+        for operater, operater_val in statement["Condition"].items()
+        for key, vals in operater_val.items()
+        for val in (vals if not isinstance(vals, str) else [vals])
+    ]
