@@ -1,0 +1,23 @@
+name: release
+on:
+  push:
+    branch:
+      - feature/publish
+
+env:
+  POETRY_VERSION: 1.8.4
+
+jobs:
+  poetry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: install poetry
+        run: curl -sSL https://install.python-poetry.org | python3 -
+      - name: get version
+        run: echo "APP_VERSION=$(poetry version | cut -d ' ' -f 2)" >> $GITHUB_ENV
+      - name: build
+        run: poetry build --clean --format wheel
+      - name: create GitHub release
+        run: gh release create "v${APP_VERSION}" dist/*.whl
+      - name: publish to PyPi
+        run: poetry publish
