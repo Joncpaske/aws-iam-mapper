@@ -22,8 +22,10 @@ jobs:
       - name: get version
         run: echo "APP_VERSION=$(poetry version | cut -d ' ' -f 2)" >> $GITHUB_ENV
       - name: build
-        run: poetry build --clean --format wheel
+        run: poetry build --format wheel
       - name: create GitHub release
         run: gh release create "v${APP_VERSION}" dist/*.whl
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: publish to PyPi
         run: poetry publish
