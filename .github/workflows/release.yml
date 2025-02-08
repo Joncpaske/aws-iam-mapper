@@ -15,7 +15,7 @@ jobs:
       url: https://pypi.org/project/awsiammapper
     permissions:
       id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
-      actions: write
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
