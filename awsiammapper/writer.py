@@ -26,7 +26,7 @@ def _get_max_conditions(statements: list[PolicyStatement]):
     return max((len(statement.conditions) for statement in statements))
 
 
-def _build_record(statement: PolicyStatement) -> None:
+def _build_record(statement: PolicyStatement) -> dict:
     record = {
         "statement_id": statement.statement_id,
         "principle_authority": statement.principle_authority,
