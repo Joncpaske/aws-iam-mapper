@@ -49,4 +49,4 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ env.DOCKER_APP }}:${APP_VERSION}-alpine
+          tags: ${{ env.DOCKER_APP }}:${{ env.APP_VERSION }}-alpine
