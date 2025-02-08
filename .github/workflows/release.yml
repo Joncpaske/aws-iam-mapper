@@ -45,9 +45,10 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - name: build
+        run: poetry build --format wheel
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          path: .
           push: true
           tags: ${{ env.DOCKER_APP }}:${{ env.APP_VERSION }}-alpine
