@@ -2,7 +2,7 @@ name: release
 on:
   push:
     branch:
-      - feature/publish
+      - main
 
 env:
   POETRY_VERSION: 1.8.4
