@@ -24,13 +24,13 @@ jobs:
       - name: install dependencies
         run: poetry install
       - name: isort
-        run: isort --profile balck --filter-files .
+        run: poetry run isort --profile balck --filter-files .
       - name: black
-        run: black --line-length=88 .
+        run: poetry run black --line-length=88 .
       - name: lint
-        run: pylint .
+        run: poetry run pylint .
       - name: run tests
-        run: pytest --cov-report=xml --cov=awsiammapper tests
+        run: poetry run pytest --cov-report=xml --cov=awsiammapper tests
         env:
           AWS_ACCESS_KEY_ID: dummy
           AWS_SECRET_ACCESS_KEY: dummy
