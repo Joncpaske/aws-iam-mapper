@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: '3.13' 
       - name: install dependencies
-        run: poetry install --all-groups
+        run: poetry install
       - name: isort
         run: isort --profile balck --filter-files .
       - name: black
