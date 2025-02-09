@@ -17,6 +17,7 @@ pylint = "^3.3.2"
 black = "^24.10.0"
 isort = "^5.13.2"
 pre-commit = "^4.0.1"
+setuptools = "^75.8.0"
 
 [tool.pylint.variables]
 max-args = 10
