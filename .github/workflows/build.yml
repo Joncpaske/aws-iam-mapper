@@ -1,11 +1,11 @@
 name: Build
 on:
   push:
-    branches:
-      - **
-      - !main
-  pull_request:
-    types: [opened, synchronize, reopened]
+    branches-ignore:
+      - 'main'
+env:
+  POETRY_VERSION: 1.8.4
+
 jobs:
   sonarqube:
     name: SonarQube
@@ -14,13 +14,21 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: install poetry
+        run: curl -sSL https://install.python-poetry.org | python3 -
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13' 
       - name: install dependencies
-        run: python -m pip install -r requirements-dev.txt
+        run: poetry install
+      - name: isort
+        run: poetry run isort --profile black --filter-files .
+      - name: black
+        run: poetry run black --line-length=88 .
+      - name: lint
+        run: poetry run pylint .
       - name: run tests
-        run: pytest --cov-report=xml --cov=awsiammapper tests
+        run: poetry run pytest --cov-report=xml --cov=awsiammapper tests
         env:
           AWS_ACCESS_KEY_ID: dummy
           AWS_SECRET_ACCESS_KEY: dummy
