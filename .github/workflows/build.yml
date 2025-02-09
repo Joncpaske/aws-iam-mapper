@@ -24,7 +24,7 @@ jobs:
       - name: install dependencies
         run: poetry install
       - name: isort
-        run: poetry run isort --profile balck --filter-files .
+        run: poetry run isort --profile black --filter-files .
       - name: black
         run: poetry run black --line-length=88 .
       - name: lint
