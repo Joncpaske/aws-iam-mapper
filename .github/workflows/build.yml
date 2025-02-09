@@ -7,6 +7,7 @@ on:
     types: [opened, synchronize, reopened]
 env:
   POETRY_VERSION: 1.8.4
+  POETRY_VIRTUALENVS_CREATE: false
 
 jobs:
   sonarqube:
@@ -22,7 +23,7 @@ jobs:
         with:
           python-version: '3.13' 
       - name: install dependencies
-        run: python -m pip install -r requirements-dev.txt
+        run: poetry install --all-groups
       - name: isort
         run: isort --profile balck --filter-files .
       - name: black
