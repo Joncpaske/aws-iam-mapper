@@ -1,8 +1,8 @@
 name: release
 on:
   push:
-    branch:
-      - main
+    branches:
+      - 'main'
 
 env:
   POETRY_VERSION: 1.8.4
